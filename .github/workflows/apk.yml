@@ -1,4 +1,4 @@
-name: Compilación de APK Credka
+name: Build APK Credka
 on: [push]
 jobs:
   build:
@@ -14,7 +14,7 @@ jobs:
           java-version: '21'
       - uses: android-actions/setup-android@v3
 
-      - name: Setup limpio
+      - name: Setup
         run: |
           rm -rf android www node_modules package-lock.json
           mkdir -p www
@@ -22,17 +22,17 @@ jobs:
           npm init -y
           npm install @capacitor/core @capacitor/cli @capacitor/android
 
-      - name: Crear Android
+      - name: Init Android
         run: |
           npx cap init CREDKA com.credka.sf --web-dir=www --npm-client npm
           npx cap add android
           npx cap copy android
 
-      - name: Compilar APK
+      - name: Build APK
         working-directory: android
         run: chmod +x ./gradlew && ./gradlew assembleDebug
 
-      - name: Subir APK
+      - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: CREDKA-APK
