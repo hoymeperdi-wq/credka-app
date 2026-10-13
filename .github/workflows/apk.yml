@@ -12,24 +12,31 @@ jobs:
         with:
           distribution: temurin
           java-version: '21'
+      - uses: android-actions/setup-android@v3
+
       - name: Setup
         run: |
-          rm -rf android
+          rm -rf android www node_modules package-lock.json
           mkdir -p www
-          echo '<html><body><h1>CREDKA</h1></body></html>' > www/index.html
+          echo '<!DOCTYPE html><html><head><meta charset="utf-8"><title>CREDKA</title></head><body><h1>CREDKA San Francisco</h1></body></html>' > www/index.html
           npm init -y
           npm install @capacitor/core @capacitor/cli @capacitor/android
+
       - name: Init Android
         run: |
-          npx cap init CREDKA com.credka.sf --web-dir=www
+          npx cap init CREDKA com.credka.sf --web-dir=www --npm-client npm
           npx cap add android
           npx cap copy android
+
+      - name: Fix Kotlin Duplicate
+        run: |
+          sed -i "s/kotlin_version = '.*'/kotlin_version = '1.9.10'/" android/variables.gradle
+          echo "configurations.all { exclude group: 'org.jetbrains.kotlin', module: 'kotlin-stdlib-jdk7'; exclude group: 'org.jetbrains.kotlin', module: 'kotlin-stdlib-jdk8' }" >> android/app/build.gradle
+
       - name: Build APK
         working-directory: android
-        run: chmod +x ./gradlew
-      - name: Build Debug
-        working-directory: android
-        run: ./gradlew assembleDebug
+        run: chmod +x./gradlew &&./gradlew assembleDebug
+
       - name: Subir APK
         uses: actions/upload-artifact@v4
         with:
