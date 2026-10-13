@@ -12,9 +12,8 @@ jobs:
         with:
           distribution: temurin
           java-version: '21'
-      - uses: android-actions/setup-android@v3
 
-      - name: Setup
+      - name: Setup project
         run: |
           rm -rf android www node_modules package-lock.json
           mkdir -p www
@@ -22,7 +21,7 @@ jobs:
           npm init -y
           npm install @capacitor/core @capacitor/cli @capacitor/android
 
-      - name: Init Android
+      - name: Create Android
         run: |
           npx cap init CREDKA com.credka.sf --web-dir=www --npm-client npm
           npx cap add android
