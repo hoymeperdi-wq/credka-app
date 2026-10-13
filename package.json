@@ -1,0 +1,26 @@
+{
+  "name": "credka-app",
+  "version": "1.0.0",
+  "description": "Esta es la versión **instalable** de CREDKA S. F. como Progressive Web App (PWA).",
+  "main": "sw.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hoymeperdi-wq/credka-app.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/hoymeperdi-wq/credka-app/issues"
+  },
+  "homepage": "https://github.com/hoymeperdi-wq/credka-app#readme",
+  "dependencies": {
+    "@capacitor/android": "^8.5.3",
+    "@capacitor/cli": "^8.5.3",
+    "@capacitor/core": "^8.5.3"
+  }
+}
