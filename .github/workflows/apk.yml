@@ -1,0 +1,39 @@
+name: Compilación de APK Credka
+on: [push]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+      - uses: android-actions/setup-android@v3
+
+      - name: Setup limpio
+        run: |
+          rm -rf android www node_modules package-lock.json
+          mkdir -p www
+          echo '<!DOCTYPE html><html><body><h1>CREDKA</h1></body></html>' > www/index.html
+          npm init -y
+          npm install @capacitor/core @capacitor/cli @capacitor/android
+
+      - name: Crear Android
+        run: |
+          npx cap init CREDKA com.credka.sf --web-dir=www --npm-client npm
+          npx cap add android
+          npx cap copy android
+
+      - name: Compilar APK
+        working-directory: android
+        run: chmod +x ./gradlew && ./gradlew assembleDebug
+
+      - name: Subir APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: CREDKA-APK
+          path: android/app/build/outputs/apk/debug/app-debug.apk
