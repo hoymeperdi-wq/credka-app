@@ -23,7 +23,7 @@ jobs:
           npx cap copy android
       - name: Build APK
         working-directory: android
-        run: chmod +x./gradlew
+        run: chmod +x ./gradlew
       - name: Build Debug
         working-directory: android
         run: ./gradlew assembleDebug
