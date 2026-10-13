@@ -14,11 +14,14 @@ jobs:
           java-version: '21'
       - name: Setup
         run: |
+          rm -rf android
+          mkdir -p www
+          echo '<html><body><h1>CREDKA</h1></body></html>' > www/index.html
           npm init -y
           npm install @capacitor/core @capacitor/cli @capacitor/android
       - name: Init Android
         run: |
-          npx cap init CREDKA com.credka.sf --web-dir=.
+          npx cap init CREDKA com.credka.sf --web-dir=www
           npx cap add android
           npx cap copy android
       - name: Build APK
