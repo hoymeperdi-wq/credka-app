@@ -5,22 +5,31 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
       - uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
           java-version: '21'
-      - name: Install Capacitor
-        run: npm install @capacitor/core @capacitor/cli @capacitor/android
+
+      - name: Setup project
+        run: |
+          npm init -y
+          npm install @capacitor/core @capacitor/cli @capacitor/android
+
       - name: Init Android
         run: |
           npx cap init CREDKA com.credka.sf --web-dir=.
           npx cap add android
           npx cap copy android
+
       - name: Build APK
         working-directory: android
         run: |
           chmod +x./gradlew
          ./gradlew assembleDebug
+
       - name: Subir APK
         uses: actions/upload-artifact@v4
         with:
