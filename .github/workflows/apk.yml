@@ -27,8 +27,11 @@ jobs:
       - name: Build APK
         working-directory: android
         run: |
-          chmod +x./gradlew
-         ./gradlew assembleDebug
+                 run: chmod +x./gradlew
+      - name: Build Debug
+        working-directory: android
+        run:./gradlew assembleDebug 
+    
 
       - name: Subir APK
         uses: actions/upload-artifact@v4
