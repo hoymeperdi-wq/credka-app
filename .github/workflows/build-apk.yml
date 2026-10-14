@@ -15,6 +15,11 @@ jobs:
       - uses: android-actions/setup-android@v3
       - name: Install
         run: npm install --legacy-peer-deps
+      - name: Add Android if missing
+        run: |
+          if [! -d "android" ]; then
+            npx cap add android
+          fi
       - name: Sync
         run: npx cap sync android
       - name: Decode keystore
@@ -23,7 +28,7 @@ jobs:
           echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 -d > android/app/credka.jks
           ls -l android/app/credka.jks
       - name: Make gradlew executable
-        run: cd android && chmod +x gradlew
+        run: chmod +x android/gradlew
       - name: Build AAB
         run: cd android &&./gradlew bundleRelease -Pandroid.injected.signing.store.file=$PWD/app/credka.jks -Pandroid.injected.signing.store.password=${{ secrets.KEYSTORE_PASSWORD }} -Pandroid.injected.signing.key.alias=${{ secrets.KEY_ALIAS }} -Pandroid.injected.signing.key.password=${{ secrets.KEY_PASSWORD }}
       - name: Upload
