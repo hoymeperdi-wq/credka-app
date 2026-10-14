@@ -8,16 +8,25 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 20
-      - uses: actions/setup-java@v4
+      - uses: actions/setup-java@v5
         with:
           distribution: temurin
           java-version: 17
       - uses: android-actions/setup-android@v3
-      - run: npm install
-      - run: npx cap sync android
-      - run: echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 -d > android/app/credka.jks
-      - run: cd android && chmod +x gradlew &&./gradlew bundleRelease -Pandroid.injected.signing.store.file=$PWD/app/credka.jks -Pandroid.injected.signing.store.password=${{ secrets.KEYSTORE_PASSWORD }} -Pandroid.injected.signing.key.alias=${{ secrets.KEY_ALIAS }} -Pandroid.injected.signing.key.password=${{ secrets.KEY_PASSWORD }}
-      - uses: actions/upload-artifact@v4
+      - name: Install
+        run: npm install
+      - name: Sync
+        run: npx cap sync android
+      - name: Decode keystore
+        run: |
+          mkdir -p android/app
+          echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 -d > android/app/credka.jks
+      - name: Make gradlew executable
+        run: cd android && chmod +x gradlew
+      - name: Build AAB
+        run: cd android &&./gradlew bundleRelease -Pandroid.injected.signing.store.file=$PWD/app/credka.jks -Pandroid.injected.signing.store.password=${{ secrets.KEYSTORE_PASSWORD }} -Pandroid.injected.signing.key.alias=${{ secrets.KEY_ALIAS }} -Pandroid.injected.signing.key.password=${{ secrets.KEY_PASSWORD }}
+      - name: Upload
+        uses: actions/upload-artifact@v4
         with:
           name: credka-aab
           path: android/app/build/outputs/bundle/release/*.aab
