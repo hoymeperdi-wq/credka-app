@@ -18,7 +18,9 @@ jobs:
       - name: Sync Capacitor
         run: npx cap sync android || true
       - name: Decode Keystore
-        run: echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > android/app/credka.jks
+        run: |
+          echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > android/app/credka.jks
+          ls -lh android/app/credka.jks
       - name: Build Release AAB
         run: |
           cd android
