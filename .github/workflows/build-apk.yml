@@ -16,13 +16,15 @@ jobs:
       - name: Install deps
         run: npm install
       - name: Sync Capacitor
-        run: npx cap sync android || (npx cap add android && npx cap sync android)
-      - name: Build APK
+        run: npx cap sync android || true
+      - name: Decode Keystore
+        run: echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > android/app/credka.jks
+      - name: Build Release AAB
         run: |
           cd android
           chmod +x gradlew
-         ./gradlew assembleDebug --stacktrace
+         ./gradlew bundleRelease -Pandroid.injected.signing.store.file=$PWD/app/credka.jks -Pandroid.injected.signing.store.password=${{ secrets.KEYSTORE_PASSWORD }} -Pandroid.injected.signing.key.alias=${{ secrets.KEY_ALIAS }} -Pandroid.injected.signing.key.password=${{ secrets.KEY_PASSWORD }}
       - uses: actions/upload-artifact@v4
         with:
-          name: credka-apk
-          path: android/app/build/outputs/apk/debug/app-debug.apk
+          name: credka-aab
+          path: android/app/build/outputs/bundle/release/*.aab
