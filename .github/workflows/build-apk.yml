@@ -4,8 +4,8 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
         with:
           node-version: 20
       - uses: actions/setup-java@v5
@@ -14,13 +14,14 @@ jobs:
           java-version: 17
       - uses: android-actions/setup-android@v3
       - name: Install
-        run: npm install
+        run: npm install --legacy-peer-deps
       - name: Sync
         run: npx cap sync android
       - name: Decode keystore
         run: |
           mkdir -p android/app
           echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 -d > android/app/credka.jks
+          ls -l android/app/credka.jks
       - name: Make gradlew executable
         run: cd android && chmod +x gradlew
       - name: Build AAB
