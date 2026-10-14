@@ -13,25 +13,11 @@ jobs:
           distribution: temurin
           java-version: 17
       - uses: android-actions/setup-android@v3
-      - name: Install deps
-        run: npm install
-      - name: Sync Android
-        run: |
-          if [! -d "android" ]; then
-            npx cap add android
-          fi
-          npx cap sync android
-      - name: Decode Keystore
-        run: |
-          echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 -d > android/app/credka.jks
-          ls -lh android/app/credka.jks
-      - name: Build Release AAB
-        run: |
-          cd android
-          chmod +x gradlew
-         ./gradlew bundleRelease -Pandroid.injected.signing.store.file=$PWD/app/credka.jks -Pandroid.injected.signing.store.password=${{ secrets.KEYSTORE_PASSWORD }} -Pandroid.injected.signing.key.alias=${{ secrets.KEY_ALIAS }} -Pandroid.injected.signing.key.password=${{ secrets.KEY_PASSWORD }}
-      - name: Upload AAB
-        uses: actions/upload-artifact@v4
+      - run: npm install
+      - run: npx cap sync android
+      - run: echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 -d > android/app/credka.jks
+      - run: cd android && chmod +x gradlew &&./gradlew bundleRelease -Pandroid.injected.signing.store.file=$PWD/app/credka.jks -Pandroid.injected.signing.store.password=${{ secrets.KEYSTORE_PASSWORD }} -Pandroid.injected.signing.key.alias=${{ secrets.KEY_ALIAS }} -Pandroid.injected.signing.key.password=${{ secrets.KEY_PASSWORD }}
+      - uses: actions/upload-artifact@v4
         with:
           name: credka-aab
           path: android/app/build/outputs/bundle/release/*.aab
