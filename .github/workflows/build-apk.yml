@@ -17,7 +17,7 @@ jobs:
       - uses: android-actions/setup-android@v3
       - name: Install deps
         run: npm install --legacy-peer-deps
-      - name: Sync capacitor
+      - name: Sync
         run: npx cap sync android
       - name: Decode keystore
         run: |
@@ -32,7 +32,7 @@ jobs:
         run: |
           cd android
           chmod +x gradlew
-         ./gradlew bundleRelease -Pandroid.injected.signing.store.file=$PWD/app/credka.jks -Pandroid.injected.signing.store.password=$STORE_PASS -Pandroid.injected.signing.key.alias=$KEY_ALIAS -Pandroid.injected.signing.key.password=$KEY_PASS
+          ./gradlew bundleRelease -Pandroid.injected.signing.store.file=$PWD/app/credka.jks -Pandroid.injected.signing.store.password=$STORE_PASS -Pandroid.injected.signing.key.alias=$KEY_ALIAS -Pandroid.injected.signing.key.password=$KEY_PASS
       - name: Upload AAB
         uses: actions/upload-artifact@v4
         with:
